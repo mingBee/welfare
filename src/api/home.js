@@ -8,6 +8,14 @@ export function testMidcache(params) {
   })
 }
 
+export function getUserInfo(params) {
+  return request({
+    url: 'api/bofc/userinfo',
+    method: 'get',
+    params
+  })
+}
+
 export function allList(params) {
   return request({
     url: 'project/meal/allList',

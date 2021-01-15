@@ -81,10 +81,11 @@
 import hemoImg from "@/assets/images/hemo/hemo_thumb.jpg";
 import stayImg from "@/assets/images/stay/stay_thumb.jpg";
 import stay1Img from "@/assets/images/stay/stay_pic2.jpg";
-import orgImg from "@/assets/images/icon.png";
+import orgImg from "@/assets/images/icon.jpg";
 import { Swipe, SwipeItem, NavBar, Icon } from "vant";
 
-import {testMidcache} from '@/api/home'
+import {testMidcache,getUserInfo as adminGetUserInfo} from '@/api/home'
+
 export default {
   name: "Home",
   components: {
@@ -103,7 +104,7 @@ export default {
         {
           projectId: 1,
           projectName: "奔跑吧血友男孩儿",
-          orgName: "山西省青少年发展基金会",
+          orgName: "山西省慈善总会",
           logoUrl: "/donation/org/161/logo_thumb/20",
           coverUrl: hemoImg,
           totalAmount: "100511.08",
@@ -114,7 +115,7 @@ export default {
         {
           projectId: 2,
           projectName: "为了明天·关爱儿童",
-          orgName: "广东省青少年发展基金会",
+          orgName: "山西省慈善总会",
           logoUrl: "/donation/org/161/logo_thumb/20",
           coverUrl: stay1Img,
           totalAmount: "8728.84",
@@ -126,7 +127,7 @@ export default {
     };
   },
   mounted(){
-    this.getHotList();
+    this.getUserInfo();
   },
   methods: {
     onClickLeft() {
@@ -148,40 +149,15 @@ export default {
       this.$router.push({name:'About',params: {id:item.projectId}});
     },
     getUserInfo(){
-      this.$cordPlugin.getBocCustomerInfo(function (data) {
-        alert('加油卡客户信息已获取'+JSON.stringify(data));
+      this.$cordPlugin.getBocCustomerAllInfo(function (data) {
+        // alert('加油卡客户信息已获取'+JSON.stringify(data));
+        alert('客户信息已获取'+JSON.stringify(data));
+        adminGetUserInfo({initCaChe:data.cipherText}).then(res=>{
+          console.log(res);
+        })
       },function (err) {
           alert(err.message || err || '网络错误，请检查网络连接');
       })
-    },
-    pay(){
-      /*******调起支付控件********/
-      var setting = {
-          // 下述数据仅为示例，实际数据上送格式请参考cordova接口文档的描述
-          merchantNo: '123456', // 商户号
-          version: 'V1.1', // 版本号
-          messageId: '654321', // 交易码
-          security: 'P7', // 签名方法
-          message: 'abc', // 请求报文明文信息
-          signature: 'cba' // 请求报文签名信息
-      };
-      alert('即将调起支付组件');
-      this.$cordPlugin.callPaymentControl(function (data) {
-          // 下述内容为点击左上角<后执行
-          alert('已调起支付控件');
-          if (data.isCancelPay === '1'){
-              // 客户取消了支付
-          } else {
-              if (data.orderStatus === '1') {
-                  // 支付成功的回调方法，可写返回后逻辑
-              } else {
-                  // 支付失败的回调方法 ，可写返回后逻辑
-              }
-          }
-
-      }, function (err) {
-          alert(err.message || err || '网络错误，请检查网络连接');
-      },setting)
     }
   },
 };
