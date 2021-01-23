@@ -5,7 +5,7 @@ import { Notify } from 'vant';
 console.log(process.env.VUE_APP_BASE_API,'process.env.VUE_APP_BASE_API')
 // 创建axios实例
 const service = axios.create({
-  baseURL: 'http://81.70.200.206:8090/bofc/', // api的base_url
+  baseURL: 'https://boc.u-cup.cn/bofc/', // api的base_url
   timeout: 15000 // 请求超时时间
 })
 

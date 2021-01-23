@@ -116,7 +116,7 @@ export default {
       allArticle:false,
       scrollIdx:0,
       amountIdx:0,
-      amounts: ["0.01", "1.00", "10.00", "100.00"],
+      amounts: ["0.10", "1.00", "10.00", "100.00"],
       maxAmount: "1000.00",
       donationList:[{
         "customerName": "非实名用户",

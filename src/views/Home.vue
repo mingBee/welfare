@@ -128,6 +128,7 @@ export default {
   },
   mounted(){
     this.getUserInfo();
+    //this.getHotList()
   },
   methods: {
     onClickLeft() {
@@ -140,7 +141,7 @@ export default {
     onClickRight() {},
     //获取热门公益列表
     getHotList(){
-      testMidcache().then(res=>{
+      adminGetUserInfo({initCaChe:'testData'}).then(res=>{
         console.log(res);
       })
     },
@@ -151,7 +152,7 @@ export default {
     getUserInfo(){
       this.$cordPlugin.getBocCustomerAllInfo(function (data) {
         // alert('加油卡客户信息已获取'+JSON.stringify(data));
-        alert('客户信息已获取'+JSON.stringify(data));
+        // alert('客户信息已获取'+JSON.stringify(data));
         adminGetUserInfo({initCaChe:data.cipherText}).then(res=>{
           console.log(res);
         })
