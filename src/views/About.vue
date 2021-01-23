@@ -94,6 +94,8 @@ import stayPic1Img from "@/assets/images/stay/stay_pic1.jpg";
 import stayPic2Img from "@/assets/images/stay/stay_pic2.jpg";
 import orgImg from "@/assets/images/icon.jpg";
 import bankIcon from "@/assets/images/bank_icon.jpg";
+
+import { donationMoney } from '@/api/about'
 export default {
   components:{
     [ActionSheet.name]:ActionSheet,
@@ -240,7 +242,19 @@ export default {
     showDonationSheet(){
       this.sheetShow = true;
     },
+    //捐赠接口
     donation(){
+      temp={
+
+      }
+      donationMoney(temp).then(res=>{
+        this.setDonationPlugin(res.data);
+      })
+    },
+    /**
+     * 调用支付插件
+     */
+    setDonationPlugin(data){
       /*******调起支付控件********/
       var setting = {
           // 下述数据仅为示例，实际数据上送格式请参考cordova接口文档的描述
