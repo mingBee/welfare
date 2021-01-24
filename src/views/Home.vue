@@ -83,8 +83,7 @@ import stayImg from "@/assets/images/stay/stay_thumb.jpg";
 import stay1Img from "@/assets/images/stay/stay_pic2.jpg";
 import orgImg from "@/assets/images/icon.jpg";
 import { Swipe, SwipeItem, NavBar, Icon } from "vant";
-
-import {testMidcache,getUserInfo as adminGetUserInfo} from '@/api/home'
+import userInfoMixin from '@/mixins/getUserInfo'
 
 export default {
   name: "Home",
@@ -92,8 +91,9 @@ export default {
     [Swipe.name]: Swipe,
     [SwipeItem.name]: SwipeItem,
     [NavBar.name]: NavBar,
-    [Icon.name]: Icon,
+    [Icon.name]: Icon
   },
+  mixins:[userInfoMixin],
   data() {
     return {
       hemoImg,
@@ -133,32 +133,21 @@ export default {
   methods: {
     onClickLeft() {
       this.$cordPlugin.goToNative(function () {
-          alert('关闭商户H5页面，返回手机银行');
+        this.$notify({ type: 'primary', message: '关闭商户H5页面，返回手机银行' });
       }, function (err) {
-          alert(err.message || err || '网络错误，请检查网络连接');
+        this.$notify({ type: 'danger', message: err.message || err || '网络错误，请检查网络连接' });
       }, {page: '0'})
     },
     onClickRight() {},
-    //获取热门公益列表
-    getHotList(){
-      adminGetUserInfo({initCaChe:'testData'}).then(res=>{
-        console.log(res);
-      })
-    },
+    // //获取热门公益列表
+    // getHotList(){
+    //   adminGetUserInfo({initCaChe:'testData'}).then(res=>{
+    //     console.log(res);
+    //   })
+    // },
     //跳转到详情
     goToDetail(item){
       this.$router.push({name:'About',params: {id:item.projectId}});
-    },
-    getUserInfo(){
-      this.$cordPlugin.getBocCustomerAllInfo(function (data) {
-        // alert('加油卡客户信息已获取'+JSON.stringify(data));
-        // alert('客户信息已获取'+JSON.stringify(data));
-        adminGetUserInfo({initCaChe:data.cipherText}).then(res=>{
-          console.log(res);
-        })
-      },function (err) {
-          alert(err.message || err || '网络错误，请检查网络连接');
-      })
     }
   },
 };

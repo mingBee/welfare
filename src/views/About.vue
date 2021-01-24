@@ -70,7 +70,7 @@
         </div>
 
         <div class="input-area">
-          <input type="text" placeholder="自定义金额">
+          <input type="number" v-model.number="cumAmount" placeholder="自定义金额">
           <span>元</span>
         </div>
 
@@ -78,7 +78,7 @@
           <van-checkbox v-model="checked" shape="square"><span class="check-text">匿名捐款</span></van-checkbox>
         </div>
 
-        <div class="donation-btn" @click="donation">立即捐款</div>
+        <div class="donation-btn" @click="beforeDonation">立即捐款</div>
       </div>
     </van-action-sheet>
   </div>
@@ -86,7 +86,7 @@
 
 <script>
 // @ is an alias to /src
-import { ActionSheet, Checkbox, NavBar, Icon} from 'vant';
+import { ActionSheet, Checkbox, NavBar, Icon, Toast} from 'vant';
 import hemoImg from "@/assets/images/hemo/hemo_thumb.jpg";
 import hemoPicImg from "@/assets/images/hemo/hemo_pic.jpg";
 import stayImg from "@/assets/images/stay/stay_thumb.jpg";
@@ -96,14 +96,19 @@ import orgImg from "@/assets/images/icon.jpg";
 import bankIcon from "@/assets/images/bank_icon.jpg";
 
 import { donationMoney } from '@/api/about'
+import userInfoMixin from '@/mixins/getUserInfo'
+import cache from '@/utils/cache'
+
 export default {
   components:{
     [ActionSheet.name]:ActionSheet,
     [Checkbox.name]:Checkbox,
     [NavBar.name]: NavBar,
     [Icon.name]: Icon,
+    [Toast.name]: Toast
   },
   name: 'Home',
+  mixins:[userInfoMixin],
   data(){
     return {
       projectId:2,
@@ -120,6 +125,7 @@ export default {
       amountIdx:0,
       amounts: ["0.10", "1.00", "10.00", "100.00"],
       maxAmount: "1000.00",
+      cumAmount:'',
       donationList:[{
         "customerName": "非实名用户",
         "amount": "0.01",
@@ -192,13 +198,13 @@ export default {
           "introduction": "<strong>【为了明天·关爱儿童】</strong><br />\n<br />\n“为了明天·关爱儿童”大型留守儿童救助项目由中华慈善总会和全球最大公益组织之一的“联合之路”共同发起，山西省慈善总会积极响应，力促项目在山西落地生根，蓬勃发展，帮扶全省的留守儿童健康成长，度过美好的花季年华。<br /><br />\n<img height=\"1220\" src=\""+ stayPic1Img +"\" style=\"width:100%;height:180px;\"/><br /><br />\n&nbsp;&nbsp;有这样一群孩子——他们本可以在父母的怀抱里，享受美好的童年，却由于父母常年在外打拼，或因各种原因，让孩子留守于老家由老人照看，成为“留守儿童”。留守儿童是一个特殊群体，他们远离父母亲，他们更渴望得到一份原始的亲情的温暖<br />\n<br />\n<strong>【项目内容】</strong><br />\n<br />&nbsp;&nbsp;这次活动几位和留守儿童同龄的孩子志愿者也参加慰问活动，他们和这些留守孩子有更多的共同语言。在慰问过程中，志愿者们亲切地与留守孩子交谈，了解每位留守孩子的生活、学习情况、健康状况，并鼓励学生要在困难中磨砺坚强意志，努力学习，长大了做一个对社会有用的人，回报社会。&nbsp;&nbsp;\n“为了明天·关爱儿童”项目将依托社区、学校、乡镇或相对独立的场所，整合现有项目或新办、设立“关爱儿童之家”，铸造一个具有“家”的感觉与氛围的场所，通过提供绘本阅读、心灵关怀、亲情连线、课业辅导及动员社会志愿者组织，为6至12岁的留守儿童提供各种形式的帮扶活动，解决留守儿童普遍存在的家庭贫困、亲情失落、学习失教、心理失衡及特殊困难等问题，帮助他们开拓视野、启迪心灵、感受关爱、健康成长，未来更好地融合社会，促进整个社会的和谐稳定与可持续发展。<br /><br />\n<img src=\""+stayPic2Img+"\" style=\"width:100%;\" /><br /><br />\n&nbsp;&nbsp;提高全民族的思想道德素质和科学文化素质，培养一代一代有理想、有道德、有文化、有纪律的公民是社会主义精神文明建设的根本任务。加强农村留守儿童的思想道德、科学文化、情感渗透、心理疏导等教育是家庭、社会、政府的共同责任。本次活动将进一步让更多的留守儿童和困境儿童感受到党和政府的温暖、社会的关爱，从而树立起乐观向上的生活态度，健康快乐地成长。<br/>&nbsp;&nbsp;山西省慈善总会计划在全省留守儿童相对集中地区新设、改建和完善500所“关爱儿童之家”，完成对全省留守儿童相对集中区域的全覆盖，并实现“关爱儿童之家”长期、持续、稳定运行。我们愿为社会各界爱心企业和爱心人士搭建公开、透明、规范运作的合作平台。对于企业与社会各界人士的慷慨相助，我们将通过多种方式表达敬意，比如授予荣誉称号、列为发起单位、选为理事或进入项目指导委员会。还可以通过中华慈善总会和“联合之路”，向国内外媒体进行宣传报道等等。我们衷心希望全社会的爱心企业、社会组织和爱心人士能响应党中央、国务院号召，把关爱留守儿童作为义不容辞的责任和义务，立即行动起来，把温暖的爱心和慈善的真情投向我省的留守儿童，帮助孩子们筑梦成长。",
           "state": 3
         }
-      }
+      },
+      orderNo:''
     }
   },
   created(){
     this.projectId = this.$route.params.id ||2;
     this.detail = this.detailList[this.projectId];
-    console.log(this.detailList[1])
   },
   mounted(){
     this.$refs.home.scrollIntoView();
@@ -238,17 +244,65 @@ export default {
       return result;
     }
   },
+  watch:{
+    cumAmount(newV,oldV){
+      if(!newV ){
+        if( this.amountIdx === -1 ){
+          this.amountIdx = 0;
+        }
+      }else{
+        this.amountIdx = -1;
+      }
+    }
+  },
   methods:{
     showDonationSheet(){
       this.sheetShow = true;
     },
+    beforeDonation(){
+      if(this.amountIdx === -1 && !this.cumAmount){
+        this.$toast('请选择捐款金额');
+        return;
+      }
+      let userInfo = cache.get('userInfo');
+      if(userInfo && userInfo.merId){
+        this.userInfo = userInfo;
+        this.donation()
+      }else{
+        this.getUserInfo(this.donation);
+      }
+    },
     //捐赠接口
     donation(){
-      temp={
-
+      if(!this.userInfo ||!this.userInfo.merId){
+        return;
+      }
+      this.$toast.loading({
+        message: '支付中...',
+        duration:0,
+        forbidClick: true
+      });
+      let amount = 0;
+      if( this.amountIdx>-1 ){
+        amount = Number(this.amounts[this.amountIdx]);
+      }else{
+        amount = Number(this.cumAmount);
+      }
+      let temp={
+        merId:this.userInfo.merId,
+        orderAmount:amount,
+        subName:this.detail.projectName
       }
       donationMoney(temp).then(res=>{
-        this.setDonationPlugin(res.data);
+        if(res && res.data && res.data.code === 20000){
+          this.setDonationPlugin(res.data);
+        }else{
+          this.$toast.clear();
+          Notify({ type: 'danger', message: res.data.message || '网络错误，请检查网络连接' });
+        }
+      }).catch(err=>{
+        this.$toast.clear();
+        Notify({ type: 'danger', message: res.data.message || '网络错误，请检查网络连接' });
       })
     },
     /**
@@ -256,49 +310,49 @@ export default {
      */
     setDonationPlugin(data){
       /*******调起支付控件********/
+      this.orderNo = data.orderNo;
       var setting = {
           // 下述数据仅为示例，实际数据上送格式请参考cordova接口文档的描述
-          merchantNo: '123456', // 商户号
-          version: 'V1.1', // 版本号
-          messageId: '654321', // 交易码
-          security: 'P7', // 签名方法
-          message: 'abc', // 请求报文明文信息
-          signature: 'cba' // 请求报文签名信息
+          merchantNo: data.merchantNo, // 商户号
+          version: data.version, // 版本号
+          messageId: data.messageId, // 交易码
+          security: data.security, // 签名方法
+          message: data.message, // 请求报文明文信息
+          signature: data.signature// 请求报文签名信息
       };
       this.$cordPlugin.callPaymentControl(function (data) {
           // 下述内容为点击左上角<后执行
-          alert(JSON.stringify(data));
+          // alert(JSON.stringify(data));
           if (data.isCancelPay === '1'){
               // 客户取消了支付
           } else {
               if (data.orderStatus === '1') {
                   // 支付成功的回调方法，可写返回后逻辑
+                  alert('支付成功');
               } else {
+                  alert('支付成功');
                   // 支付失败的回调方法 ，可写返回后逻辑
               }
           }
 
       }, function (err) {
-          alert(err.message || err || '网络错误，请检查网络连接');
+          Notify({ type: 'danger', message: err.message || '网络错误，请检查网络连接' });
       },setting)
     },
     choiceAmount(item,index){
       this.amountIdx = index;
+      this.cumAmount = '';
     },
     showAll(){
       this.allArticle = true;
     },
     setTime(){
-      console.log(this.scrollIdx );
       var timer = setInterval(()=>{
-        console.log(this.scrollIdx);
         if(this.scrollIdx==this.donationList.length-1){
           this.scrollIdx = 0;
         }else{
           this.scrollIdx += 1;
         }
-        
-        
       },6000);
     },
     backHome(){
@@ -506,8 +560,12 @@ export default {
         border:1px solid #ccc;
         font-size: 13px;
         color:#FF4D4D;
+        font-weight: 600;
         &.active {
-          border-color: #FF4D4D;
+          background-color: #FF4D4D;
+          border-color:#FF4D4D;
+          color: #fff;
+          
         }
       }
     }
