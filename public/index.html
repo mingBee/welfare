@@ -8,6 +8,7 @@
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
     <script src="./static/js/demo.js"></script>
+    <script src="./static/js/vconsole.min.js"></script>
   </head>
   <body>
     <noscript>
@@ -16,4 +17,8 @@
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
+
+  <script>
+    new VConsole();
+  </script>
 </html>

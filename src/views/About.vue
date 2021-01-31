@@ -86,7 +86,7 @@
 
 <script>
 // @ is an alias to /src
-import { ActionSheet, Checkbox, NavBar, Icon, Toast} from 'vant';
+import { ActionSheet, Checkbox, NavBar, Icon, Toast, Notify} from 'vant';
 import hemoImg from "@/assets/images/hemo/hemo_thumb.jpg";
 import hemoPicImg from "@/assets/images/hemo/hemo_pic.jpg";
 import stayImg from "@/assets/images/stay/stay_thumb.jpg";
@@ -104,8 +104,7 @@ export default {
     [ActionSheet.name]:ActionSheet,
     [Checkbox.name]:Checkbox,
     [NavBar.name]: NavBar,
-    [Icon.name]: Icon,
-    [Toast.name]: Toast
+    [Icon.name]: Icon
   },
   name: 'Home',
   mixins:[userInfoMixin],
@@ -260,49 +259,55 @@ export default {
       this.sheetShow = true;
     },
     beforeDonation(){
-      if(this.amountIdx === -1 && !this.cumAmount){
-        this.$toast('请选择捐款金额');
-        return;
-      }
+      // if(this.amountIdx === -1 && !this.cumAmount){
+      //   Toast('请选择捐款金额');
+      //   return;
+      // }
       let userInfo = cache.get('userInfo');
-      if(userInfo && userInfo.merId){
-        this.userInfo = userInfo;
-        this.donation()
-      }else{
-        this.getUserInfo(this.donation);
-      }
+      let id = '';
+      if(userInfo && userInfo.id){
+        id = userInfo.id
+      };
+      // if(userInfo && userInfo.merId){
+      //   this.userInfo = userInfo;
+        this.donation(id)
+      // }else{
+      //   this.getUserInfo(this.donation);
+      // }
     },
     //捐赠接口
-    donation(){
-      if(!this.userInfo ||!this.userInfo.merId){
-        return;
-      }
-      this.$toast.loading({
-        message: '支付中...',
-        duration:0,
-        forbidClick: true
-      });
+    donation(id){
+      // if(!this.userInfo ||!this.userInfo.merId){
+      //   return;
+      // }
+      // Toast.loading({
+      //   message: '支付中...',
+      //   duration:0,
+      //   forbidClick: true
+      // });
       let amount = 0;
       if( this.amountIdx>-1 ){
-        amount = Number(this.amounts[this.amountIdx]);
+        amount = String(this.amounts[this.amountIdx]);
       }else{
-        amount = Number(this.cumAmount);
+        amount = String(this.cumAmount);
       }
       let temp={
-        merId:this.userInfo.merId,
+        // merId:this.userInfo.merId,
+        id:id,
         orderAmount:amount,
         subName:this.detail.projectName
       }
+      console.log(temp,'temp')
       donationMoney(temp).then(res=>{
-        if(res && res.data && res.data.code === 20000){
+        if(res && res.data){
           this.setDonationPlugin(res.data);
         }else{
-          this.$toast.clear();
-          Notify({ type: 'danger', message: res.data.message || '网络错误，请检查网络连接' });
+          // Toast.clear();
+          Notify({ type: 'danger', message: '支付借口返回参数错误' });
         }
       }).catch(err=>{
-        this.$toast.clear();
-        Notify({ type: 'danger', message: res.data.message || '网络错误，请检查网络连接' });
+        // Toast.clear();
+        Notify({ type: 'danger', message: '插件错误' });
       })
     },
     /**
@@ -313,12 +318,12 @@ export default {
       this.orderNo = data.orderNo;
       var setting = {
           // 下述数据仅为示例，实际数据上送格式请参考cordova接口文档的描述
-          merchantNo: data.merchantNo, // 商户号
-          version: data.version, // 版本号
-          messageId: data.messageId, // 交易码
-          security: data.security, // 签名方法
-          message: data.message, // 请求报文明文信息
-          signature: data.signature// 请求报文签名信息
+        merchantNo: data.merchantNo, // 商户号
+        version: data.version, // 版本号
+        messageId: data.messageId, // 交易码
+        security: data.security, // 签名方法
+        message: data.message, // 请求报文明文信息
+        signature: data.signature // 请求报文签名信息
       };
       this.$cordPlugin.callPaymentControl(function (data) {
           // 下述内容为点击左上角<后执行
