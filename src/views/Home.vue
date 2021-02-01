@@ -82,7 +82,7 @@ import hemoImg from "@/assets/images/hemo/hemo_thumb.jpg";
 import stayImg from "@/assets/images/stay/stay_thumb.jpg";
 import stay1Img from "@/assets/images/stay/stay_pic2.jpg";
 import orgImg from "@/assets/images/icon.jpg";
-import { Swipe, SwipeItem, NavBar, Icon } from "vant";
+import { Swipe, SwipeItem, NavBar, Icon,Notify, Toast } from "vant";
 import userInfoMixin from '@/mixins/getUserInfo'
 
 export default {
@@ -133,9 +133,9 @@ export default {
   methods: {
     onClickLeft() {
       this.$cordPlugin.goToNative(function () {
-        this.$notify({ type: 'primary', message: '关闭商户H5页面，返回手机银行' });
+        Notify({ type: 'primary', message: '关闭商户H5页面，返回手机银行' });
       }, function (err) {
-        this.$notify({ type: 'danger', message: err.message || err || '网络错误，请检查网络连接' });
+        Notify({ type: 'danger', message: err.message || err || '网络错误，请检查网络连接' });
       }, {page: '0'})
     },
     onClickRight() {},

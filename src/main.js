@@ -5,10 +5,8 @@ import 'vant/lib/index.css';
 
 Vue.config.productionTip = false
 
-import { Toast, Notify } from 'vant'
-Vue.prototype.$toast = Toast
-Vue.prototype.$notify = Notify
-
+// import { Toast } from 'vant'
+// Vue.use(Toast) 
 window.document.addEventListener('deviceready', function (){
   Vue.prototype.$cordPlugin = window.c_plugins.merchantBridge;
   new Vue({

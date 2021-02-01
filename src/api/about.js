@@ -6,9 +6,12 @@ import request from '@/axios/request'
  */
 export function donationMoney(data) {
   return request({
+    headers: {
+      'Content-Type': 'application/json'
+    },
     url: 'api/bofc/B2CAPPPayRecvOrder',
     method: 'post',
-    data
+    data:JSON.stringify(data)
   })
 }
 

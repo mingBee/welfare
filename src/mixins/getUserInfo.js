@@ -1,6 +1,6 @@
 import {getUserInfo as adminGetUserInfo} from '@/api/home'
-import { putCache } from '@/utils/cache'
-let sign = false;
+import { Notify,Toast } from 'vant';
+import cache from '@/utils/cache'
 export default {
   data() {
     return {
@@ -9,21 +9,16 @@ export default {
   },
   methods: {
     getUserInfo(func){
-      if(sign){
-        return;
-      }
-      sign = true;
       this.$cordPlugin.getBocCustomerAllInfo(function (data) {
-        this.$toast.loading({
+        Toast.loading({
           duration:0,
           forbidClick: true
         });
         adminGetUserInfo({initCaChe:data.cipherText}).then(res=>{
-          sign = false;
-          this.$toast.clear();
+          Toast.clear();
           if(res.data.code === 20000){
             if(res.data.merId){
-              putCache('userInfo', res.data, 30 *60 *1000);//缓存30分钟
+              cache.put('userInfo', res.data, 30 *60 *1000);//缓存30分钟
               this.userInfo = res.data;
               if(func && typeof func === "function"){
                 func();
@@ -31,13 +26,11 @@ export default {
             }
           }
         }).catch(err=>{
-          sign = false;
           Notify({ type: 'danger', message: err.message || '网络错误，请检查网络连接' });
-          this.$toast.clear();
+          Toast.clear();
         })
       },function (err) {
-        this.$toast.clear();
-        sign = false;
+        Toast.clear();
         Notify({ type: 'danger', message: err.message || '网络错误，请检查网络连接' });
       })
     }
