@@ -16,11 +16,36 @@ export function getUserInfo(params) {
   })
 }
 
-export function allList(params) {
+// export function allList(params) {
+//   return request({
+//     url: 'project/meal/allList',
+//     method: 'get',
+//     params
+//   })
+// }
+
+/**
+ * 获取用户慈善份数
+ * @param {*} userId 
+ */
+//
+export function getPipByUserId(params) {
   return request({
-    url: 'project/meal/allList',
+    url: 'api/bofc/getPipByUserId',
     method: 'get',
     params
   })
 }
+
+/**
+ * 获取排行榜
+ */
+//
+export function getTopSum() {
+  return request({
+    url: 'api/bofc/getTopSum',
+    method: 'get'
+  })
+}
+
 

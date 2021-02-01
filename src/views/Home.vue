@@ -28,7 +28,7 @@
     <div class="part mydonation-part">
       <div class="item">
         <span class="title">我已捐爱心(份)</span>
-        <span class="num">1</span>
+        <span class="num">{{loveNum}}</span>
       </div>
       <div class="item">
         <span class="title">今年公益月分数(月)</span>
@@ -84,6 +84,7 @@ import stay1Img from "@/assets/images/stay/stay_pic2.jpg";
 import orgImg from "@/assets/images/icon.jpg";
 import { Swipe, SwipeItem, NavBar, Icon ,Toast, Notify} from "vant";
 import userInfoMixin from '@/mixins/getUserInfo'
+import { getPipByUserId, getTopSum } from '@/api/home'
 
 export default {
   name: "Home",
@@ -100,6 +101,7 @@ export default {
       stayImg,
       stay1Img,
       orgImg,
+      loveNum:1,
       hotList: [
         {
           projectId: 1,
@@ -148,6 +150,16 @@ export default {
     //跳转到详情
     goToDetail(item){
       this.$router.push({name:'About',params: {id:item.projectId}});
+    },
+    //获取用户慈善份数
+    getPipByUserId(){
+      getPipByUserId({userId:this.userId}).then(res=>{
+        this.loveNum = res.data || 0;
+      })
+    },
+    //获取捐款排行榜
+    getTopSum(){
+
     }
   },
 };
