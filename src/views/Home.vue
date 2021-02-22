@@ -31,8 +31,8 @@
         <span class="num">{{loveNum}}</span>
       </div>
       <div class="item">
-        <span class="title">今年公益月分数(月)</span>
-        <span class="num">1</span>
+        <span class="title">{{topMsg.subName}}</span>
+        <span class="num">{{topMsg.amount}}元</span>
       </div>
     </div>
 
@@ -84,7 +84,7 @@ import stay1Img from "@/assets/images/stay/stay_pic2.jpg";
 import orgImg from "@/assets/images/icon.jpg";
 import { Swipe, SwipeItem, NavBar, Icon ,Toast, Notify} from "vant";
 import userInfoMixin from '@/mixins/getUserInfo'
-import { getPipByUserId, getTopSum } from '@/api/home'
+import { getPipByUserId, getTopSum, getAllBySubname} from '@/api/home'
 
 export default {
   name: "Home",
@@ -102,6 +102,10 @@ export default {
       stay1Img,
       orgImg,
       loveNum:1,
+      topMsg:{
+        amount:'',
+        subName:''
+      },
       hotList: [
         {
           projectId: 1,
@@ -129,8 +133,9 @@ export default {
     };
   },
   mounted(){
-    this.getUserInfo();
-    //this.getHotList()
+    this.getUserInfo(this.getPipByUserId);
+    this.getAllBySubname();
+    this.getTopSum();
   },
   methods: {
     onClickLeft() {
@@ -141,25 +146,37 @@ export default {
       }, {page: '0'})
     },
     onClickRight() {},
-    // //获取热门公益列表
-    // getHotList(){
-    //   adminGetUserInfo({initCaChe:'testData'}).then(res=>{
-    //     console.log(res);
-    //   })
-    // },
     //跳转到详情
     goToDetail(item){
       this.$router.push({name:'About',params: {id:item.projectId}});
     },
     //获取用户慈善份数
     getPipByUserId(){
-      getPipByUserId({userId:this.userId}).then(res=>{
+      console.log('开始获取用户慈善参数')
+      getPipByUserId({userId:this.userInfo.id}).then(res=>{
         this.loveNum = res.data || 0;
       })
     },
     //获取捐款排行榜
     getTopSum(){
-
+      getTopSum().then(res=>{
+        this.topMsg = res.data || { };
+      })
+    },
+    //获取子项目捐款份数
+    getAllBySubname(){
+      getAllBySubname().then(res=>{
+        if(res.data && res.data.length>0){
+          let list = res.data;
+          this.hotList.forEach(i=>{
+            list.forEach(j=>{
+              if(i.projectName === j.subName){
+                i.totalCount = j.total;
+              }
+            })
+          });
+        } 
+      })
     }
   },
 };

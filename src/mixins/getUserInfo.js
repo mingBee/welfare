@@ -22,9 +22,12 @@ export default {
           // sign = false;
           // Toast.clear();
           // if(res.data.merId){
+            console.log('成功获取用户数据');
             cache.put('userInfo', res.data, 30 *60 *1000);//缓存30分钟
+            console.log('缓存成功');
             this.userInfo = res.data;
             if(func && typeof func === "function"){
+              console.log('调用回调');
               func();
             }
           // }

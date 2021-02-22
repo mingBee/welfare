@@ -50,7 +50,7 @@
       <div class="scroll" :style="`transform:translateY(${-8 * scrollIdx}vh);`">
         <div class="item" v-for="(item,index) in donationList" :key="index">
           <span class="name-area"><img :src="bankIcon" class="bank-icon" alt=""><span class="name" v-text="item.customerName"></span></span>
-          <span class="amount">捐款<span class="num" v-text="item.amount"></span>元</span>
+          <span class="amount">捐款<span class="num" v-text="item.orderAmount"></span>元</span>
           <span class="time">{{item.orderTime |filTime}}</span>
         </div>
       </div>
@@ -98,6 +98,7 @@ import bankIcon from "@/assets/images/bank_icon.jpg";
 import { donationMoney } from '@/api/about'
 import userInfoMixin from '@/mixins/getUserInfo'
 import cache from '@/utils/cache'
+import { getTatilBySubName ,getOrderList} from '@/api/about'
 
 export default {
   components:{
@@ -125,50 +126,52 @@ export default {
       amounts: ["0.10", "1.00", "10.00", "100.00"],
       maxAmount: "1000.00",
       cumAmount:'',
-      donationList:[{
-        "customerName": "非实名用户",
-        "amount": "0.01",
-        "orderTime": "2020-12-24 10:14:21"
-      }, 
-      {
-        "customerName": "非实名用户",
-        "amount": "0.01",
-        "orderTime": "2020-12-24 10:14:20"
-      }, {
-        "customerName": "非实名用户",
-        "amount": "0.01",
-        "orderTime": "2020-12-24 10:14:19"
-      }, 
-      {
-        "customerName": "非实名用户",
-        "amount": "0.01",
-        "orderTime": "2020-12-24 10:13:54"
-      }, {
-        "customerName": "非实名用户",
-        "amount": "0.01",
-        "orderTime": "2020-12-24 10:13:39"
-      }, {
-        "customerName": "非实名用户",
-        "amount": "0.01",
-        "orderTime": "2020-12-24 10:13:23"
-      }, {
-        "customerName": "非实名用户",
-        "amount": "0.01",
-        "orderTime": "2020-12-24 10:11:54"
-      }, 
-      {
-        "customerName": "爱心用户",
-        "amount": "0.01",
-        "orderTime": "2020-12-24 10:11:35"
-      }, {
-        "customerName": "非实名用户",
-        "amount": "0.01",
-        "orderTime": "2020-12-24 10:11:13"
-      }, {
-        "customerName": "非实名用户",
-        "amount": "0.01",
-        "orderTime": "2020-12-24 10:11:02"
-      }],
+      donationList:[
+      // {
+      //   "customerName": "非实名用户",
+      //   "amount": "0.01",
+      //   "orderTime": "2020-12-24 10:14:21"
+      // }, 
+      // {
+      //   "customerName": "非实名用户",
+      //   "amount": "0.01",
+      //   "orderTime": "2020-12-24 10:14:20"
+      // }, {
+      //   "customerName": "非实名用户",
+      //   "amount": "0.01",
+      //   "orderTime": "2020-12-24 10:14:19"
+      // }, 
+      // {
+      //   "customerName": "非实名用户",
+      //   "amount": "0.01",
+      //   "orderTime": "2020-12-24 10:13:54"
+      // }, {
+      //   "customerName": "非实名用户",
+      //   "amount": "0.01",
+      //   "orderTime": "2020-12-24 10:13:39"
+      // }, {
+      //   "customerName": "非实名用户",
+      //   "amount": "0.01",
+      //   "orderTime": "2020-12-24 10:13:23"
+      // }, {
+      //   "customerName": "非实名用户",
+      //   "amount": "0.01",
+      //   "orderTime": "2020-12-24 10:11:54"
+      // }, 
+      // {
+      //   "customerName": "爱心用户",
+      //   "amount": "0.01",
+      //   "orderTime": "2020-12-24 10:11:35"
+      // }, {
+      //   "customerName": "非实名用户",
+      //   "amount": "0.01",
+      //   "orderTime": "2020-12-24 10:11:13"
+      // }, {
+      //   "customerName": "非实名用户",
+      //   "amount": "0.01",
+      //   "orderTime": "2020-12-24 10:11:02"
+      // }
+      ],
       detail:{
         coverUrl:''
       },
@@ -206,6 +209,8 @@ export default {
     this.detail = this.detailList[this.projectId];
   },
   mounted(){
+    this.getTatilBySubName();
+    this.getOrderList();
     this.$refs.home.scrollIntoView();
     let el = this.$refs.scroll;
     var io = new IntersectionObserver(
@@ -368,6 +373,29 @@ export default {
       this.$router.back(-1);
     },
     onClickRight() {},
+    //获取子项目的慈善份数和捐款金额
+    getTatilBySubName(){
+      getTatilBySubName({subName:this.detail.projectName}).then(res=>{
+        if(res.data){
+          this.detail.totalAmount = res.data.amount;
+          this.detail.totalCount = res.data.total;
+        }
+      })
+    },
+    //获取捐款列表
+    getOrderList(){
+      let temp = {
+        offset:1,
+        limit:20,
+        subName:this.detail.projectName,
+        orderStatus:1
+      }
+      getOrderList(temp).then(res=>{
+        if(res.data && res.data.length>0){
+          this.donationList = res.data;
+        }
+      })
+    }
   }
 }
 </script>
@@ -616,8 +644,8 @@ export default {
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 6vh;
-      line-height: 6vh;
+      height: 7vh;
+      line-height: 7vh;
       text-align: center;
       background-color: #FF4D4D;
       color: #fff;

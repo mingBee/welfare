@@ -48,4 +48,13 @@ export function getTopSum() {
   })
 }
 
+/**
+ * 首页的子项目捐款份数
+ */
 
+export function getAllBySubname() {
+  return request({
+    url: 'api/bofc/getAllBySubname',
+    method: 'get'
+  })
+}

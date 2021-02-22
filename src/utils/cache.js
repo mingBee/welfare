@@ -24,10 +24,12 @@ const postfix = '_donation'; // 缓存前缀
  * @param  {[type]} v [键值]  
  * @param  {[type]} t [时间、单位秒]  
  */ 
-const localStorage = window.localStorage;
+// const localStorage = window.localStorage;
 
 function put(k, v, t) {  
+  console.log('开始保存')
   localStorage.setItem(k, v)   
+  console.log('保存成功')
   let seconds = parseInt(t);  
   if (seconds > 0) {  
       let timestamp = Date.parse(new Date());  

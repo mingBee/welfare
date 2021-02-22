@@ -4,7 +4,7 @@ import { Notify } from 'vant';
 // import store from '../store'
 // 创建axios实例
 const service = axios.create({
-  baseURL: 'https://boc.u-cup.cn/bofc/', // api的base_url
+  baseURL: '', // api的base_url  https://boc.u-cup.cn/bofc/
   timeout: 15000 // 请求超时时间
 })
 

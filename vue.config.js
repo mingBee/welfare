@@ -31,7 +31,7 @@ module.exports = {
   devServer: {
     proxy: {
         '': {     //这里最好有一个 /
-            target: 'http://81.70.200.206:8090/bofc/',  // 后台接口域名
+            target: 'https://boc.u-cup.cn/bofc/',  // 后台接口域名
             ws: true,        //如果要代理 websockets，配置这个参数
             secure: true,  // 如果是https接口，需要配置这个参数
             changeOrigin: true,  //是否跨域

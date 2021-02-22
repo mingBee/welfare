@@ -15,14 +15,43 @@ export function donationMoney(data) {
   })
 }
 
+// /**
+//  * 获取支付状态
+//  * @param {} data 
+//  */
+// export function getPayType(data) {
+//   return request({
+//     url: 'api/bofc/B2CAPPPayRecvOrder',
+//     method: 'post',
+//     data
+//   })
+// }
+
 /**
- * 获取支付状态
- * @param {} data 
+ * 获取子项目的慈善份数和捐款金额
+ * @param {*} subName 
  */
-export function getPayType(data) {
+export function getTatilBySubName(params) {
   return request({
-    url: 'api/bofc/B2CAPPPayRecvOrder',
-    method: 'post',
-    data
+    url: 'api/bofc/getTatilBySubName',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * 获取子项目的捐款列表
+ * @param {*} subName 
+| offset 	      | 是        | int        | 分页偏移量 
+| limit 	      | 是        | int        | 每页大小   
+| subName 	    | 是        | String     | 子项目名称 
+| orderStatus 	| 是        | int        | 订单状态   1成功
+ * 
+ */
+export function getOrderList(params) {
+  return request({
+    url: 'api/bofc/getOrderList',
+    method: 'get',
+    params
   })
 }
