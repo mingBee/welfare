@@ -6,7 +6,7 @@
       left-arrow
       @click-left="onClickLeft"
       @click-right="onClickRight"
-      
+
     >
       <template #right>
         <van-icon name="ellipsis" size="18"/>
@@ -300,7 +300,8 @@ export default {
         // merId:this.userInfo.merId,
         id:id,
         orderAmount:amount,
-        subName:this.detail.projectName
+        subName:this.detail.projectName,
+        mark:this.checked ?'1':'2'
       }
       console.log(temp,'temp')
       donationMoney(temp).then(res=>{
@@ -330,7 +331,7 @@ export default {
         message: data.message, // 请求报文明文信息
         signature: data.signature // 请求报文签名信息
       };
-      this.$cordPlugin.callPaymentControl(function (data) {
+      this.$cordPlugin.callPaymentControl( data=> {
           // 下述内容为点击左上角<后执行
           // alert(JSON.stringify(data));
           if (data.isCancelPay === '1'){
@@ -339,6 +340,7 @@ export default {
               if (data.orderStatus === '1') {
                   // 支付成功的回调方法，可写返回后逻辑
                   Toast.success('支付成功');
+                  this.goToRank();
               } else {
                 Toast.success('支付失败');
                   // alert('支付成功');
@@ -368,6 +370,10 @@ export default {
     },
     backHome(){
       this.$router.push({name:'Home'});
+    },
+    //跳转到排行榜页
+    goToRank(item){
+      this.$router.push({name:'Rank'});
     },
     onClickLeft() {
       this.$router.back(-1);
