@@ -33,7 +33,7 @@ function put(k, v, t) {
   let seconds = parseInt(t);  
   if (seconds > 0) {  
       let timestamp = Date.parse(new Date());  
-      timestamp = timestamp / 1000 + seconds;  
+      timestamp = timestamp + seconds;  
       localStorage.setItem(k + postfix, timestamp + "")  
   } else {  
     localStorage.removeItem(k + postfix)
@@ -48,7 +48,7 @@ function put(k, v, t) {
 function get(k, def) {  
     let deadtime = parseInt(localStorage.getItem(k + postfix))   
     if (deadtime) {  
-        if (parseInt(deadtime) < Date.parse(new Date()) / 1000) {
+        if (parseInt(deadtime) < Date.parse(new Date())) {
 					removeAsync(k);  //缓存过期，清除缓存
 					if (def) {  
 							return def;  
