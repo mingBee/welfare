@@ -24,6 +24,7 @@
         <span>电话号</span>
         <span>捐款金额</span>
       </p>
+      <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
       <van-list
         v-model="loading"
         :finished="finished"
@@ -36,7 +37,7 @@
           <span class="money">{{item.amount}}元</span>
         </p>
       </van-list>
-      
+      </van-pull-refresh>
     </div>
 
   </div>
@@ -62,7 +63,8 @@ export default {
       },
       list:[],
       loading: false,
-      finished: false
+      finished: false,
+      refreshing: false
     }
   },
   methods:{
@@ -84,6 +86,16 @@ export default {
 
       // 数据全部加载完成
       // this.finished = true;
+    },
+    //下拉刷新
+    onRefresh() {
+      // 清空列表数据
+      this.finished = false;
+
+      // 重新加载数据
+      // 将 loading 设置为 true，表示处于加载状态
+      this.loading = true;
+      this.onLoad();
     },
   }
 }
