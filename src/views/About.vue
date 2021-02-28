@@ -339,10 +339,12 @@ export default {
           } else {
               if (data.orderStatus === '1') {
                   // 支付成功的回调方法，可写返回后逻辑
-                  Toast.success('支付成功');
+                  // Toast.success('支付成功');
+                  console.log('支付成功')
                   this.goToRank();
               } else {
-                Toast.success('支付失败');
+                console.log('支付失败')
+                // Toast.success('支付失败');
                   // alert('支付成功');
                   // 支付失败的回调方法 ，可写返回后逻辑
               }

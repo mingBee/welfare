@@ -4,10 +4,11 @@ import request from '@/axios/request'
  * 获取捐赠排行榜
  * @param {*} subName 
  */
-export function getRankList() {
+export function getRankList(params) {
   return request({
     url: 'api/bofc/getTotalByUserId',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 

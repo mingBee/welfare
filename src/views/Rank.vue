@@ -19,24 +19,27 @@
 
     <!-- <p class="title-part">排行榜</p> -->
     <div class="rank-list">
-      <p class="item header">  
-        <span>排名</span>
-        <span>电话号</span>
-        <span>捐款金额</span>
-      </p>
+      
       <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-      <van-list
-        v-model="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        @load="onLoad"
-      >
-        <p v-for="(item,index) in list" :key="index" class="item">
-          <span class="idx">{{index+1}}</span>
-          <span class="phone">{{item.customerName}}</span>
-          <span class="money">{{item.amount}}元</span>
-        </p>
-      </van-list>
+        <van-sticky>
+          <p class="header">  
+            <span>排名</span>
+            <span>电话号</span>
+            <span>捐款金额</span>
+          </p>
+        </van-sticky>
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+        >
+          <p v-for="(item,index) in list" :key="index" class="item">
+            <span class="idx">{{(index >= 50)?'未上榜':index+1}}</span>
+            <span class="phone">{{item.mobile}}</span>
+            <span class="money">{{item.amount}}元</span>
+          </p>
+        </van-list>
       </van-pull-refresh>
     </div>
 
@@ -46,14 +49,15 @@
 
 
 <script>
-import { NavBar, List, PullRefresh} from 'vant';
+import { NavBar, List, PullRefresh, Sticky} from 'vant';
 import { getRankList } from '@/api/rank'
 
 export default {
   components:{
     [NavBar.name]: NavBar,
     [List.name]: List,
-    [PullRefresh.name]:PullRefresh
+    [PullRefresh.name]:PullRefresh,
+    [Sticky.name]: Sticky
   },
   data(){
     return {
@@ -64,7 +68,11 @@ export default {
       list:[],
       loading: false,
       finished: false,
-      refreshing: false
+      refreshing: false,
+      pageParam:{
+        offset:1,
+        limit:15
+      }
     }
   },
   methods:{
@@ -72,24 +80,32 @@ export default {
       this.$router.back(-1);
     },
     onLoad() {
-      getRankList().then(res=>{
+      getRankList(this.pageParam).then(res=>{
         // 加载状态结束
+        if(this.pageParam.offset ===1){
+          this.refreshing = false;
+        }
         this.loading = false;
         this.finished = true;
-        if(res && res.data){
-          this.list = res.data;
+        if(res.data && res.data.totaoByUserIds){
+          this.pageParam.offset += 1;
+          this.list = res.data.totaoByUserIds;
         }else{
           this.list = [];
         }
+        if(res.data){
+          // 数据全部加载完成
+          if(this.pageParam.offset > res.data.page){
+            this.finished = true;
+          }
+        }
       })
-      
-
-      // 数据全部加载完成
-      // this.finished = true;
     },
     //下拉刷新
     onRefresh() {
       // 清空列表数据
+      this.list = [];
+      this.pageParam.offset = 1;
       this.finished = false;
 
       // 重新加载数据
@@ -101,18 +117,37 @@ export default {
 }
 </script>
 
+<style lang="scss">
+  .rank-list {
+    .van-pull-refresh__track {
+      min-height: calc(100vh - 46px);
+    }
+  }
+</style>
+
 
 <style lang="scss" scoped>
   .rank-list {
-    .item {
+    .item,.header{
       display: flex;
       flex-direction: row;
       justify-content: space-around;
       padding:8px 0;
       margin:0 20px;
       border-bottom: 1px solid #f0f0f0;
-      &.header{
-        font-weight: 600;
+    }
+    .header{
+      font-weight: 600;
+    }
+    .item {
+      &:nth-of-type(1){
+        color:#DD5144;
+      }
+      &:nth-of-type(2){
+        color:#FFCE44;
+      }
+      &:nth-of-type(3){
+        color:#1EA262;
       }
     }
   }
