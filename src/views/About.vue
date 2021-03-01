@@ -257,6 +257,11 @@ export default {
       }else{
         this.amountIdx = -1;
       }
+    },
+    userInfo(newV,oldV){
+      if(newV){
+        this.donation(this.userInfo.id);
+      }
     }
   },
   methods:{
@@ -264,21 +269,17 @@ export default {
       this.sheetShow = true;
     },
     beforeDonation(){
-      // if(this.amountIdx === -1 && !this.cumAmount){
-      //   Toast('请选择捐款金额');
-      //   return;
-      // }
+      if(this.amountIdx === -1 && !this.cumAmount){
+        Toast('请选择捐款金额');
+        return;
+      }
       let userInfo = cache.get('userInfo');
-      let id = '';
+      console.log(userInfo,'支付前获取用户信息');
       if(userInfo && userInfo.id){
-        id = userInfo.id
-      };
-      // if(userInfo && userInfo.merId){
-      //   this.userInfo = userInfo;
-        this.donation(id)
-      // }else{
-      //   this.getUserInfo(this.donation);
-      // }
+        this.userInfo = userInfo;
+      }else{
+        this.getUserInfo();
+      }
     },
     //捐赠接口
     donation(id){

@@ -4,20 +4,22 @@ import cache from '@/utils/cache'
 export default {
   data() {
     return {
-      userInfo:{}
+      userInfo:null
     }
   },
   methods: {
-    getUserInfo(func){
+    getUserInfo(){
       // if(sign){
       //   return;
       // }
       // sign = true;
-      this.$cordPlugin.getBocCustomerAllInfo(function (data) {
+      console.log('开始获取用户信息')
+      this.$cordPlugin.getBocCustomerAllInfo( data=> {
         // Toast.loading({
         //   duration:0,
         //   forbidClick: true
         // });
+        console.log('成功出发用户插件');
         adminGetUserInfo({initCaChe:data.cipherText}).then(res=>{
           // sign = false;
           // Toast.clear();
@@ -25,20 +27,19 @@ export default {
             console.log('成功获取用户数据');
             cache.put('userInfo', res.data, 30 *60 *1000);//缓存30分钟
             console.log('缓存成功');
+            console.log(res.data,'缓存的数据');
             this.userInfo = res.data;
-            if(func && typeof func === "function"){
-              console.log('调用回调');
-              func();
-            }
           // }
         }).catch(err=>{
           // sign = false;
+          console.log(err,'服务器err')
           Notify({ type: 'danger', message: '获取服务器用户信息错误' });
           // Toast.clear();
         })
-      },function (err) {
+      }, err=> {
         // Toast.clear();
         // sign = false;
+        console.log(err,'插件err')
         Notify({ type: 'danger', message: '获取用户插件错误' });
       })
     }

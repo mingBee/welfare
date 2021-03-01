@@ -21,10 +21,10 @@
     <div class="rank-list">
       
       <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-        <van-sticky>
+        <van-sticky :offset-top="46">
           <p class="header">  
             <span>排名</span>
-            <span>电话号</span>
+            <span>用户</span>
             <span>捐款金额</span>
           </p>
         </van-sticky>
@@ -70,7 +70,7 @@ export default {
       finished: false,
       refreshing: false,
       pageParam:{
-        offset:1,
+        offset:0,
         limit:15
       }
     }

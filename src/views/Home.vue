@@ -133,9 +133,17 @@ export default {
     };
   },
   mounted(){
-    this.getUserInfo(this.getPipByUserId);
+    this.getUserInfo();
     this.getAllBySubname();
     this.getTopSum();
+  },
+  watch:{
+    userInfo(newV,oldV){
+      if(newV){
+        console.log('间听到变化')
+        this.getPipByUserId();
+      }
+    }
   },
   methods: {
     onClickLeft() {
@@ -145,7 +153,9 @@ export default {
         Notify({ type: 'danger', message: err.message || '网络错误，请检查网络连接' });
       }, {page: '0'})
     },
-    onClickRight() {},
+    onClickRight() {
+      this.$router.push({name:'Me'});
+    },
     //跳转到详情
     goToDetail(item){
       this.$router.push({name:'About',params: {id:item.projectId}});
