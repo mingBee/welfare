@@ -435,14 +435,14 @@ export default {
     thumbsUp(){
       let params = {
         subName: this.detail.projectName,
-        customerId: this.userInfo.id 
+        customerId: this.userInfo.id
       }
       upvote(params).then(res=>{
         if(res.message === '点赞成功'){
           Toast({
             message: '点赞成功',
             icon: 'like',
-            iconPrefix:'like-icon'
+            className:'like-icon'
           });
         }else{
           Toast({
@@ -464,6 +464,11 @@ export default {
   }
   .van-action-sheet__close {
     font-size: 16px;
+  }
+  .like-toast {
+    .van-icon {
+      color:#DD5144;
+    }
   }
 </style>
 
@@ -715,7 +720,5 @@ export default {
       font-size: 14px;
     }
   }
-  .like-icon {
-    color:#DD5144;
-  }
+
 </style>
