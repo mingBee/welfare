@@ -12,7 +12,7 @@
         <van-icon name="ellipsis" size="18"/>
       </template>
     </van-nav-bar>
-    <img :src="detail.coverUrl" style="width:100%" alt="">
+    <img :src="detail.coverUrl" style="width:100%;height:25vh" alt="">
     
     <div class="part mydonation-part">
       <div class="item">
@@ -20,7 +20,11 @@
         <span class="num" v-text="detail.totalAmount"></span>
       </div>
       <div class="item">
-        <span class="title">已有爱心(份)</span>
+        <div class="title-area">
+          <span class="title" >爱心助力</span>
+          <van-icon class="like-icon" name="like" color="#DD5144" size="28" @click="beforeThumbsUp()"/>
+        </div>
+        
         <span class="num" v-text="detail.totalCount"></span>
       </div>
     </div>
@@ -98,7 +102,7 @@ import bankIcon from "@/assets/images/bank_icon.jpg";
 import { donationMoney } from '@/api/about'
 import userInfoMixin from '@/mixins/getUserInfo'
 import cache from '@/utils/cache'
-import { getTatilBySubName ,getOrderList} from '@/api/about'
+import { getTatilBySubName ,getOrderList, getSubNameUpvote, upvote } from '@/api/about'
 
 export default {
   components:{
@@ -211,6 +215,7 @@ export default {
   mounted(){
     this.getTatilBySubName();
     this.getOrderList();
+    this.getSubNameUpvote();
     this.$refs.home.scrollIntoView();
     let el = this.$refs.scroll;
     var io = new IntersectionObserver(
@@ -404,7 +409,48 @@ export default {
           this.donationList = res.data;
         }
       })
-    }
+    },
+    //获取点赞数
+    getSubNameUpvote(){
+      getSubNameUpvote({subName:this.detail.projectName}).then(res=>{
+        if(res.data){
+          this.detail.totalCount = res.data;
+        }else{
+          this.detail.totalCount = 0 ;
+        }
+      })
+    },
+    //点赞之前的判断
+    beforeThumbsUp(){
+      let userInfo = cache.get('userInfo');
+      console.log(userInfo,'点赞前获取用户信息');
+      if(userInfo && userInfo.id){
+        this.userInfo = userInfo;
+        this.thumbsUp();
+      }else{
+        this.getUserInfo();
+      }
+    },
+    //点赞
+    thumbsUp(){
+      let params = {
+        subName: this.detail.projectName,
+        customerId: this.userInfo.id 
+      }
+      upvote(params).then(res=>{
+        if(res.message === '点赞成功'){
+          Toast({
+            message: '点赞成功',
+            icon: 'like',
+            iconPrefix:'like-icon'
+          });
+        }else{
+          Toast({
+            message: '今日已点赞'
+          });
+        }
+      })
+    },
   }
 }
 </script>
@@ -438,6 +484,14 @@ export default {
     flex-direction: row;
     align-items: center;
     padding:10px !important;
+    .title-area {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      .like-icon {
+        margin-left: 10px;
+      }
+    }
     .item {
       flex: 1;
       display: flex;
@@ -660,5 +714,8 @@ export default {
       color: #fff;
       font-size: 14px;
     }
+  }
+  .like-icon {
+    color:#DD5144;
   }
 </style>
