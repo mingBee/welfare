@@ -8,7 +8,13 @@
     </van-nav-bar>
 
     <div class="info-part">
-      
+      <div class="title-area">
+        <span>{{title}}</span>
+      </div>
+      <div>
+        <p>爱心值</p>
+        <p>{{info.love}}</p>
+      </div>
     </div>
     
     <div class="history-part">
@@ -30,18 +36,22 @@
 
 <script>
   import { NavBar, List} from 'vant';
-  import { getMeDonationInfo, getMeHistory } from '@/api/me'
+  import { getMeDonationInfo, getMeHistory, getMeTitle } from '@/api/me'
+  import userInfoMixin from '@/mixins/getUserInfo'
+  import cache from '@/utils/cache'
 export default {
   components:{
     [NavBar.name]: NavBar,
     [List.name]: List
   },
+  mixins:[userInfoMixin],
   data(){
     return {
       info:{
         sum:'',
         love:''
       },
+      title:'中行公益用户',
       list:[],
       loading: false,
       finished: false,
@@ -52,7 +62,17 @@ export default {
     }
   },
   mounted(){
-
+    this.beforeGetMeTitle();
+  },
+  watch:{
+    userInfo:{
+      handler(newV,oldV){
+        if(newV && newV.id){
+          this.getMeTitle();
+        }
+      },
+      immediate:true
+    }
   },
   methods:{
     onClickLeft(){
@@ -89,12 +109,44 @@ export default {
           this.info = res.data;
         }
       })
-    }
+    },
+    beforeGetMeTitle(){
+      if(this.userInfo && this.userInfo.id){
+        this.getMeTitle();
+        return
+      }
+      let userInfo = cache.get('userInfo');
+      if(userInfo && userInfo.id){
+        this.userInfo = userInfo;
+        this.getMeTitle();
+      }else{
+        this.getUserInfo();
+      }
+    },
+    /**
+     * 获取用户捐款信息
+     */
+    getMeTitle(){
+      getMeTitle({userId:this.userInfo.id}).then(res=>{
+        if(res && res.data){
+          this.title = res.data;
+        }
+      })
+    },
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  .info-part {
+    .title-area {
+      height:15vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 17px;
+    }
+  }
   .history-part {
     .item{
       display: flex;

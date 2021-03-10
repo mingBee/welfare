@@ -22,7 +22,7 @@
       <div class="item">
         <div class="title-area">
           <span class="title" >爱心助力</span>
-          <van-icon class="like-icon" name="like" color="#DD5144" size="28" @click="beforeThumbsUp()"/>
+          <van-icon class="like-icon" :name="isDonationed===1?'like':'like-o'" color="#DD5144" size="28" @click="beforeThumbsUp()"/>
         </div>
         
         <span class="num" v-text="detail.totalCount"></span>
@@ -205,7 +205,10 @@ export default {
           "state": 3
         }
       },
-      orderNo:''
+      orderNo:'',
+      donationSign:false,
+      thumbsUpSign:false,
+      isDonationed:0
     }
   },
   created(){
@@ -265,7 +268,14 @@ export default {
     },
     userInfo(newV,oldV){
       if(newV){
-        this.donation(this.userInfo.id);
+        if(this.thumbsUpSign){
+          this.thumbsUpSign = false;
+          this.thumbsUp();
+        }else if(this.donationSign){
+          this.donationSign = false;
+          this.donation(this.userInfo.id);
+        }
+        
       }
     }
   },
@@ -274,9 +284,14 @@ export default {
       this.sheetShow = true;
     },
     beforeDonation(){
+      this.donationSign = true;
       if(this.amountIdx === -1 && !this.cumAmount){
         Toast('请选择捐款金额');
         return;
+      }
+      if(this.userInfo && this.userInfo.id){
+        this.donation(this.userInfo.id);
+        return
       }
       let userInfo = cache.get('userInfo');
       console.log(userInfo,'支付前获取用户信息');
@@ -412,9 +427,15 @@ export default {
     },
     //获取点赞数
     getSubNameUpvote(){
-      getSubNameUpvote({subName:this.detail.projectName}).then(res=>{
+      getSubNameUpvote({subName:this.detail.projectName,customerId:this.userInfo.id}).then(res=>{
         if(res.data){
-          this.detail.totalCount = res.data;
+          this.detail.totalCount = res.data.allTotal;
+          if(res.data.mark === 0 ){
+            this.isDonationed = false;
+          }else {
+            this.isDonationed = true;
+          }
+          
         }else{
           this.detail.totalCount = 0 ;
         }
@@ -422,6 +443,11 @@ export default {
     },
     //点赞之前的判断
     beforeThumbsUp(){
+      this.thumbsUpSign = true;
+      if(this.userInfo && this.userInfo.id){
+        this.thumbsUp();
+        return
+      }
       let userInfo = cache.get('userInfo');
       console.log(userInfo,'点赞前获取用户信息');
       if(userInfo && userInfo.id){
@@ -440,7 +466,7 @@ export default {
       upvote(params).then(res=>{
         if(res.message === '点赞成功'){
           Toast({
-            message: '点赞成功',
+            message: '助力成功',
             icon: 'like',
             className:'like-icon'
           });

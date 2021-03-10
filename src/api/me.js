@@ -23,3 +23,16 @@ export function getMeHistory(params) {
     params
   })
 }
+
+/**
+ * 获取我的捐赠称号
+ * @param {*} 
+ * userId 
+ */
+export function getMeTitle(params) {
+  return request({
+    url: 'api/bofc/getChTotal',
+    method: 'get',
+    params
+  })
+}
