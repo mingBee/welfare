@@ -55,3 +55,29 @@ export function getOrderList(params) {
     params
   })
 }
+/**
+ * 点赞
+ * @param {*}
+ *  subName
+ */
+export function getSubNameUpvote(params) {
+  return request({
+    url: 'api/bofc/getSubNameUpvote',
+    method: 'get',
+    params
+  })
+}
+
+
+/**
+ * 点赞
+ * @param {*}
+ *  subName customerId
+ */
+export function upvote(params) {
+  return request({
+    url: 'api/bofc/upvote',
+    method: 'get',
+    params
+  })
+}
