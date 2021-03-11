@@ -13,7 +13,13 @@ export default {
       //   return;
       // }
       // sign = true;
+      //cache.put('userInfo', {id:'816234019636252672'}, 30 *60 *1000);
       console.log('开始获取用户信息')
+      let userInfo = cache.get('userInfo');
+      if(userInfo && userInfo.id){
+        this.userInfo = userInfo;
+        return;
+      }
       this.$cordPlugin.getBocCustomerAllInfo( data=> {
         // Toast.loading({
         //   duration:0,

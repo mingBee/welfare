@@ -6,7 +6,7 @@ import request from '@/axios/request'
  */
 export function getMeDonationInfo(params) {
   return request({
-    url: 'api/bofc/getTotalByUserId',
+    url: 'api/bofc/getUserAmount',
     method: 'get',
     params
   })
@@ -18,7 +18,7 @@ export function getMeDonationInfo(params) {
  */
 export function getMeHistory(params) {
   return request({
-    url: 'api/bofc/getTotalByUserId',
+    url: 'api/bofc/getOrderListByUserId',
     method: 'get',
     params
   })

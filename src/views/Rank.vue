@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-nav-bar
-      title="排行榜"
+      title="爱心榜"
       left-arrow
       @click-left="onClickLeft"
     >
@@ -25,7 +25,7 @@
           <p class="header">  
             <span>排名</span>
             <span>用户</span>
-            <span>捐款金额</span>
+            <span>爱心值</span>
           </p>
         </van-sticky>
         <van-list
@@ -37,7 +37,7 @@
           <p v-for="(item,index) in list" :key="index" class="item">
             <span class="idx">{{(index >= 50)?'未上榜':index+1}}</span>
             <span class="phone">{{item.mobile}}</span>
-            <span class="money">{{item.amount}}元</span>
+            <span class="money">{{item.amount}}</span>
           </p>
         </van-list>
       </van-pull-refresh>
@@ -77,7 +77,7 @@ export default {
   },
   methods:{
     onClickLeft(){
-      this.$router.back(-1);
+      this.$router.push({name:'Home'});
     },
     onLoad() {
       getRankList(this.pageParam).then(res=>{
@@ -95,7 +95,7 @@ export default {
         }
         if(res.data){
           // 数据全部加载完成
-          if(this.pageParam.offset > res.data.page){
+          if(this.pageParam.offset >= res.data.page){
             this.finished = true;
           }
         }

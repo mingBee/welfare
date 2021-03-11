@@ -28,7 +28,7 @@ const postfix = '_donation'; // 缓存前缀
 
 function put(k, v, t) {  
   console.log('开始保存')
-  localStorage.setItem(k, v)   
+  localStorage.setItem(k, JSON.stringify(v))   
   console.log('保存成功')
   let seconds = parseInt(t);  
   if (seconds > 0) {  
@@ -59,7 +59,7 @@ function get(k, def) {
     }  
     let res = localStorage.getItem(k);  
     if (res) {  
-        return res;  
+        return JSON.parse(res);  
     } else {  
         if (def == undefined  || def == "") {  
             def = false;   

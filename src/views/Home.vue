@@ -68,6 +68,9 @@
       <div class="time">服务时间 <span class="num">24</span>小时</div>
     </div>
 
+    <div class="rank-btn" @click="goToRank">
+      <img :src="rankIcon" alt="">
+    </div>
     <!-- <h4>银行插件按钮测试</h4>
     <div class="test-btn" @click="getUserInfo">获取用户信息</div>
     <div class="test-btn" @click="pay">调取支付插件</div> -->
@@ -81,6 +84,7 @@
 import hemoImg from "@/assets/images/hemo/hemo_thumb.jpg";
 import stayImg from "@/assets/images/stay/stay_thumb.jpg";
 import stay1Img from "@/assets/images/stay/stay_pic2.jpg";
+import rankIcon from "@/assets/images/rank/rank-icon.png";
 import orgImg from "@/assets/images/icon.jpg";
 import { Swipe, SwipeItem, NavBar, Icon ,Toast, Notify} from "vant";
 import userInfoMixin from '@/mixins/getUserInfo'
@@ -101,6 +105,7 @@ export default {
       stayImg,
       stay1Img,
       orgImg,
+      rankIcon,
       loveNum:1,
       topMsg:{
         amount:'',
@@ -114,7 +119,7 @@ export default {
           logoUrl: "/donation/org/161/logo_thumb/20",
           coverUrl: hemoImg,
           totalAmount: "100511.08",
-          totalCount: 1741339,
+          totalCount: 0,
           summary: "为了满足这群热爱学习、热爱生活的血友男孩儿喜爱运动的热情，我们组织了这次特殊意义的小型运动会，让他们能够奔跑在祖国广阔的土地上。",
           state: 3
         },
@@ -125,7 +130,7 @@ export default {
           logoUrl: "/donation/org/161/logo_thumb/20",
           coverUrl: stay1Img,
           totalAmount: "8728.84",
-          totalCount: 258557,
+          totalCount: 0,
           summary: "“为了明天·关爱儿童”大型留守儿童救助项目由中华慈善总会和全球最大公益组织之一的“联合之路”共同发起，山西省慈善总会积极响应，力促项目在山西落地生根，蓬勃发展，帮扶全省的留守儿童健康成长，度过美好的花季年华。",
           state: 3
         }
@@ -159,6 +164,9 @@ export default {
     //跳转到详情
     goToDetail(item){
       this.$router.push({name:'About',params: {id:item.projectId}});
+    },
+    goToRank(){
+      this.$router.push({name:'Rank'});
     },
     //获取用户慈善份数
     getPipByUserId(){
@@ -349,6 +357,22 @@ export default {
     }
     .time {
       font-size: 13px;
+    }
+  }
+  .rank-btn {
+    position: fixed;
+    right:5px;
+    bottom:25%;
+    border-radius: 50%;
+    width:32px;
+    height:32px;
+    background-color: rgba(0,0,0,.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+      width:20px;
+      height:20px;
     }
   }
 </style>
