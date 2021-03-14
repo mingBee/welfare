@@ -32,7 +32,7 @@
       </div>
       <div class="item">
         <span class="title">爱心勋章</span>
-        <span class="num">{{topMsg.amount || 0}}</span>
+        <span class="brage" :class="[loaderClass]">{{title}}</span>
       </div>
     </div>
 
@@ -89,6 +89,7 @@ import orgImg from "@/assets/images/icon.jpg";
 import { Swipe, SwipeItem, NavBar, Icon ,Toast, Notify} from "vant";
 import userInfoMixin from '@/mixins/getUserInfo'
 import { getPipByUserId, getTopSum, getAllBySubname} from '@/api/home'
+import { getMeTitle } from '@/api/me'
 
 export default {
   name: "Home",
@@ -107,6 +108,7 @@ export default {
       orgImg,
       rankIcon,
       loveNum:1,
+      title:'',
       topMsg:{
         amount:'',
         subName:''
@@ -147,7 +149,36 @@ export default {
       if(newV){
         console.log('间听到变化')
         this.getPipByUserId();
+        this.getMeTitle();
       }
+    }
+  },
+  computed:{
+    loaderClass(){
+      let result;
+      switch(this.title){
+        case '与人为善':
+        result = 'first-level';
+        break;
+        case '助人为乐':
+        result = 'second-level';
+        break;
+        case '古道热肠':
+        result = 'third-level';
+        break;
+        case '积善成德':
+        result = 'fourth-level';
+        break;
+        case '仁爱之心':
+        result = 'fifth-level';
+        break;
+        case '大爱无疆':
+        result = 'sixth-level';
+        break;
+        default:
+        result = 'default-level';
+      }
+      return result;
     }
   },
   methods: {
@@ -195,6 +226,14 @@ export default {
           });
         } 
       })
+    },
+    /**
+    * 获取用户捐款信息
+    */
+    getMeTitle(){
+      getMeTitle({userId:this.userInfo.id}).then(res=>{
+        this.title = res.message;
+      })
     }
   },
 };
@@ -241,6 +280,35 @@ export default {
       .num {
         font-size: 15px;
         color:#FF4D4D;
+      }
+      .brage {
+        font-size: 13px;
+        font-weight: 600;
+        padding:2px 10px;
+        background-color: red;
+        border-radius: 5px;
+        color:#fff;
+        &.first-level {
+          background: linear-gradient(#AE8D71, #AE825C, #AE7645); 
+        }
+        &.second-level {
+          background: linear-gradient(#A2D8FA, #84CDFA, #63C0FA); 
+        }
+        &.third-level {
+          background: linear-gradient(#ABABAB, #8F8F8F, #6B6B6B); 
+        }
+        &.fourth-level {
+          background: linear-gradient(#FFEE64, #D5AC22, #C49129); 
+        }
+        &.fifth-level {
+          background: linear-gradient(#78D1CE, #5AD1CD, #449D9A); 
+        }
+        &.sixth-level {
+          background: linear-gradient(#f07e6e, #F03B21, #F01E00); 
+        }
+        &.default-level {
+          background: linear-gradient(#C8C8FA, #B7B7FA, #8989FA); 
+        }
       }
     }
   }

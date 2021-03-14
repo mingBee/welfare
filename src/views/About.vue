@@ -409,7 +409,7 @@ export default {
       getTatilBySubName({subName:this.detail.projectName}).then(res=>{
         if(res.data){
           this.detail.totalAmount = res.data.amount;
-          this.detail.totalCount = res.data.total;
+          // this.detail.totalCount = res.data.total;
         }
       })
     },

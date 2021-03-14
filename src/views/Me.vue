@@ -18,15 +18,34 @@
             <span></span> -->
           </div>
         <div class="bottom">
-          <div class="bottom-area">
-            <p class="txt">爱心值</p>
-            <p class="number">{{info.amount}}</p>
-          </div>
-
-          <div class="bottom-area bottom-right">
-            <p class="txt">爱心勋章</p>
-            <p class="number" :class="[loaderClass]">{{title}}</p>
-          </div>
+          <van-popover v-model="showLovePopover" trigger="click">
+            <div class="popver-contxt">爱心值=捐赠金额 x 100</div>
+            <template #reference>
+              <div class="bottom-area">
+                <p class="txt">爱心值</p>
+                <p class="number">{{info.amount}}</p>
+              </div>
+            </template>
+          </van-popover>
+          
+          <van-popover v-model="showBragePopover" trigger="click">
+            <div class="popver-contxt">
+              <p class="title">爱心勋章：</p>
+              <p>与人为善 ( 没有捐款过，仅有点击助力 )</p>
+              <p>助人为乐 ( 1次捐款，不论是否有助力 )</p>
+              <p>古道热肠 ( 15次捐款，不论是否有助力 )</p>
+              <p>积善成德 ( 30次捐款，不论是否有助力 )</p>
+              <p>仁爱之心 ( 50次捐款，不论是否有助力 )</p>
+              <p>大爱无疆 ( 100次捐款，不论是否有助力 )</p>
+            </div>
+            <template #reference>
+              <div class="bottom-area bottom-right">
+                <p class="txt">爱心勋章</p>
+                <p class="number" :class="[loaderClass]">{{title}}</p>
+              </div>
+            </template>
+          </van-popover>
+          
 
         </div>
       </div>
@@ -77,7 +96,7 @@
 </template>
 
 <script>
-  import { NavBar, List, Dialog, Field, Toast } from 'vant';
+  import { NavBar, List, Dialog, Field, Toast, Popover } from 'vant';
   import { getMeDonationInfo, getMeHistory, getMeTitle, getCustomerName, updateCustomerName } from '@/api/me'
   import userInfoMixin from '@/mixins/getUserInfo'
   import cache from '@/utils/cache'
@@ -87,6 +106,7 @@ export default {
     [NavBar.name]: NavBar,
     [List.name]: List,
     [Field.name]: Field,
+    [Popover.name]: Popover,
     [Dialog.Component.name]: Dialog.Component,
   },
   mixins:[userInfoMixin],
@@ -99,6 +119,8 @@ export default {
       editNickname:'中行公益用户',
       titleSign:false,
       title:'公益用户',
+      showLovePopover:false,
+      showBragePopover:false,
       list:[],
       loading: false,
       finished: false,
@@ -144,7 +166,7 @@ export default {
       handler(newV,oldV){
         if(newV && newV.id){
           this.getMeTitle();
-          // this.getCustomerName();
+          this.getCustomerName();
           this.getMeDonationInfo();
           this.onLoad();
         }
@@ -281,15 +303,16 @@ export default {
       justify-content: center;
       align-items: center;
       padding:15px 0;
+      .van-popover__wrapper:nth-of-type(1) {
+        margin-right: 70px;
+      }
       .bottom-area {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        &:nth-of-type(1){
-          margin-right:70px;
-        }
       }
+
       .txt {
         color:#BEBEBE;
         font-size: 13px;
@@ -456,5 +479,16 @@ export default {
       transform: rotate(360deg);
     }
   }
-
+  .popver-contxt {
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 13px;
+    color:#333;
+    .title {
+      font-weight: 600;
+    }
+    p {
+      padding: 3px 0;
+    }
+  }
 </style>
