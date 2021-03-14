@@ -21,24 +21,27 @@
     <div class="rank-list">
       
       <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-        <van-sticky :offset-top="46">
+        <!-- <van-sticky :offset-top="46"> -->
           <p class="header">  
             <span>排名</span>
             <span>用户</span>
             <span>爱心值</span>
           </p>
-        </van-sticky>
+        <!-- </van-sticky> -->
         <van-list
           v-model="loading"
           :finished="finished"
           finished-text="没有更多了"
           @load="onLoad"
         >
+        <div class="van-clearfix">
           <p v-for="(item,index) in list" :key="index" class="item">
             <span class="idx">{{(index >= 50)?'未上榜':index+1}}</span>
             <span class="phone">{{item.mobile}}</span>
             <span class="money">{{item.amount}}</span>
           </p>
+        </div>
+
         </van-list>
       </van-pull-refresh>
     </div>
@@ -71,7 +74,7 @@ export default {
       refreshing: false,
       pageParam:{
         offset:0,
-        limit:15
+        limit:25
       }
     }
   },
@@ -86,10 +89,9 @@ export default {
           this.refreshing = false;
         }
         this.loading = false;
-        this.finished = true;
         if(res.data && res.data.totaoByUserIds){
           this.pageParam.offset += 1;
-          this.list = res.data.totaoByUserIds;
+          this.list = this.list.concat(res.data.totaoByUserIds);
         }else{
           this.list = [];
         }

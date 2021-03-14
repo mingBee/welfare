@@ -36,3 +36,29 @@ export function getMeTitle(params) {
     params
   })
 }
+
+/**
+ * 获取客户名称
+ * @param {*} 
+ * userId 
+ */
+export function getCustomerName(params) {
+  return request({
+    url: 'api/bofc/getCustomerName',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * 更新客户名称
+ * @param {*} 
+ * userId 
+ */
+export function updateCustomerName(params) {
+  return request({
+    url: 'api/bofc/updateCustomerName',
+    method: 'put',
+    params
+  })
+}

@@ -18,7 +18,7 @@
       indicator-color="white"
     >
       <van-swipe-item>
-        <img :src="hemoImg" />
+        <img :src="hemoImg"/>
       </van-swipe-item>
       <van-swipe-item>
         <img :src="stayImg" />
@@ -31,8 +31,8 @@
         <span class="num">{{loveNum}}</span>
       </div>
       <div class="item">
-        <span class="title">{{topMsg.subName}}</span>
-        <span class="num">{{topMsg.amount}}元</span>
+        <span class="title">爱心勋章</span>
+        <span class="num">{{topMsg.amount || 0}}</span>
       </div>
     </div>
 
@@ -217,6 +217,7 @@ export default {
     .van-swipe-item {
       img {
         width:100%;
+        height:35vh;
       }
     } 
   }

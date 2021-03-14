@@ -8,18 +8,26 @@
     </van-nav-bar>
     <main>
       <div class="info-part">
-        <div class="top">
-          <span class="txt">{{title}}</span>
+        <div class="top" @click="showEditTitle">
+          <span class="txt">{{info.nickname}}</span>
 
-          <div class="loader" :class="[loaderClass]"></div>
+          <!-- <div class="loader" :class="[loaderClass]" ></div>
             <span></span>
             <span></span>
             <span></span>
-            <span></span>
+            <span></span> -->
           </div>
         <div class="bottom">
-          <p class="txt">爱心值</p>
-          <p class="number">{{info.amount}}</p>
+          <div class="bottom-area">
+            <p class="txt">爱心值</p>
+            <p class="number">{{info.amount}}</p>
+          </div>
+
+          <div class="bottom-area bottom-right">
+            <p class="txt">爱心勋章</p>
+            <p class="number" :class="[loaderClass]">{{title}}</p>
+          </div>
+
         </div>
       </div>
       
@@ -40,45 +48,56 @@
             v-model="loading"
             :finished="finished"
             finished-text="没有更多了"
-            :immediate-check="false"
             @load="onLoad"
           >
-            <div v-for="(item,index) in list" :key="index" class="item">
-              <p class="line">
-                <span class="name">{{item.subName}}</span>
-                <span class="time">{{item.orderTime}}</span>
-              </p>
-              <p class="line">
-                <span class="mobile">{{item.mobile}}</span>
-                <span class="amount">{{item.amount}}元</span>
-              </p>
+            <div class="van-clearfix">
+              <div v-for="(item,index) in list" :key="index" class="item">
+                <p class="line">
+                  <span class="name">{{item.subName}}</span>
+                  <span class="time">{{item.orderTime}}</span>
+                </p>
+                <p class="line">
+                  <span class="mobile">{{item.mobile}}</span>
+                  <span class="amount">{{item.amount}}元</span>
+                </p>
+              </div>
             </div>
+            
           </van-list>
         </div>
 
       </div>
+
+      <van-dialog v-model="titleSign" title="修改昵称" show-cancel-button @confirm="editTitleConfirm">
+        <van-field v-model="editNickname" placeholder="请输入昵称" class="edit-title-input" maxlength="10"/>
+      </van-dialog>
     </main>
 
   </div>
 </template>
 
 <script>
-  import { NavBar, List} from 'vant';
-  import { getMeDonationInfo, getMeHistory, getMeTitle } from '@/api/me'
+  import { NavBar, List, Dialog, Field, Toast } from 'vant';
+  import { getMeDonationInfo, getMeHistory, getMeTitle, getCustomerName, updateCustomerName } from '@/api/me'
   import userInfoMixin from '@/mixins/getUserInfo'
   import cache from '@/utils/cache'
 export default {
   mixins:[userInfoMixin],
   components:{
     [NavBar.name]: NavBar,
-    [List.name]: List
+    [List.name]: List,
+    [Field.name]: Field,
+    [Dialog.Component.name]: Dialog.Component,
   },
   mixins:[userInfoMixin],
   data(){
     return {
       info:{
-        amount:''
+        amount:'',
+        nickname:'中行公益用户'
       },
+      editNickname:'中行公益用户',
+      titleSign:false,
       title:'公益用户',
       list:[],
       loading: false,
@@ -125,6 +144,7 @@ export default {
       handler(newV,oldV){
         if(newV && newV.id){
           this.getMeTitle();
+          // this.getCustomerName();
           this.getMeDonationInfo();
           this.onLoad();
         }
@@ -138,8 +158,8 @@ export default {
     },
     onLoad() {
       if(!this.userInfo || !this.userInfo.id){
-        this.pageParam.offset = 0;
-        this.getUserInfo();
+        // this.pageParam.offset = 0;
+        // this.getUserInfo();
         return
       }
       let params = Object.assign(this.pageParam,{userId:this.userInfo.id});
@@ -147,7 +167,7 @@ export default {
         this.loading = false;
         if(res.data && res.data.orderByUserVos){
           this.pageParam.offset += 1;
-          this.list = res.data.orderByUserVos;
+          this.list = this.list.concat(res.data.orderByUserVos);
         }else{
           this.list = [];
         }
@@ -179,10 +199,50 @@ export default {
       getMeTitle({userId:this.userInfo.id}).then(res=>{
         this.title = res.message;
       })
+    },
+    /**
+     * 获取用户捐款信息
+     */
+    getCustomerName(){
+      getCustomerName({userId:this.userInfo.id}).then(res=>{
+        this.info.nickname = res.message;
+      })
+    },
+    /**
+     * 打开修改昵称弹出框
+     */
+    showEditTitle(){
+      this.editNickname = this.info.nickname;
+      this.titleSign = true;
+    },
+    /**
+     * 修改昵称确认按钮
+     */
+    editTitleConfirm(){
+      if(this.editNickname === ''){
+        this.titleSign = false;
+        return
+      };
+      updateCustomerName({userId:this.userInfo.id,customerName:this.editNickname}).then(res=>{
+        if( res.message === '修改昵称成功' ){
+          this.info.nickname = this.editNickname;
+        }else {
+          Toast('修改失败');
+        }
+      })
     }
   }
 }
 </script>
+
+<style lang="scss">
+  .edit-title-input {
+    .van-field__control{
+      text-align: center;
+      padding:10px 0;
+    }
+  }
+</style>
 
 <style lang="scss" scoped>
   main {
@@ -196,14 +256,14 @@ export default {
     margin-bottom: 15px;
     .top {
       position: relative;
-      height:120px;
+      height:80px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       border-bottom: 2px solid #ECEBF1;
       color:#BEBEBE;
-      font-size: 13px;
+      font-size: 15px;
       .txt {
         position: absolute;
         z-index: 2;
@@ -217,18 +277,59 @@ export default {
     }
     .bottom {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       justify-content: center;
       align-items: center;
       padding:15px 0;
+      .bottom-area {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        &:nth-of-type(1){
+          margin-right:70px;
+        }
+      }
       .txt {
         color:#BEBEBE;
         font-size: 13px;
-        margin-bottom: 5px;
+        margin-bottom: 12px;
       }
       .number {
         color:#9D5750;
         font-size: 20px;
+        line-height: 20px;
+      }
+      .bottom-right {
+        .number {
+          font-size: 13px;
+          font-weight: 600;
+          padding:2px 10px;
+          background-color: red;
+          border-radius: 5px;
+          color:#fff;
+          &.first-level {
+            background: linear-gradient(#AE8D71, #AE825C, #AE7645); 
+          }
+          &.second-level {
+            background: linear-gradient(#A2D8FA, #84CDFA, #63C0FA); 
+          }
+          &.third-level {
+            background: linear-gradient(#ABABAB, #8F8F8F, #6B6B6B); 
+          }
+          &.fourth-level {
+            background: linear-gradient(#FFEE64, #D5AC22, #C49129); 
+          }
+          &.fifth-level {
+            background: linear-gradient(#78D1CE, #5AD1CD, #449D9A); 
+          }
+          &.sixth-level {
+            background: linear-gradient(#f07e6e, #F03B21, #F01E00); 
+          }
+          &.default-level {
+            background: linear-gradient(#C8C8FA, #B7B7FA, #8989FA); 
+          }
+        }
       }
     }
   }
@@ -355,4 +456,5 @@ export default {
       transform: rotate(360deg);
     }
   }
+
 </style>

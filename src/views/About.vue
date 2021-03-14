@@ -501,6 +501,7 @@ export default {
   .home {
     background-color: #eee;
     padding-bottom: 12vh;
+    overflow-x: hidden;
   }
   .my-swipe .van-swipe-item {
     color: #fff;
@@ -540,7 +541,7 @@ export default {
 
   h4 {
     background-color: #fff;
-    width:100vw;
+    // width:100vw;
     margin:10px 0 0;
     padding: 15px 10px 15px 10px;
     text-align: left;
@@ -552,6 +553,7 @@ export default {
     }
   }
   .part {
+    box-sizing: border-box;
     padding:0 10px 20px;
     background-color: #fff;
   }
