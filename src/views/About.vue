@@ -53,7 +53,7 @@
     <div class="part donation-part" ref="scroll">
       <div class="scroll" :style="`transform:translateY(${-8 * scrollIdx}vh);`">
         <div class="item" v-for="(item,index) in donationList" :key="index">
-          <span class="name-area"><img :src="bankIcon" class="bank-icon" alt=""><span class="name" v-text="item.customerName"></span></span>
+          <span class="name-area"><img :src="orgImg" class="bank-icon" alt=""><span class="name" v-text="item.customerName"></span></span>
           <span class="amount">捐款<span class="num" v-text="item.orderAmount"></span>元</span>
           <span class="time">{{item.orderTime |filTime}}</span>
         </div>
@@ -631,11 +631,11 @@ export default {
         flex-direction: row;
         align-items: center;
         .bank-icon {
-          width:33px;
-          height:33px;
+          width:22px;
+          height:27px;
           position: relative;
           top:-1px;
-          margin-right: 3px;
+          margin-right: 10px;
         }
         .name {
           font-weight: 500;
